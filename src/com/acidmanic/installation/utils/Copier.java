@@ -27,27 +27,26 @@ import java.util.List;
  * @author Mani Moayedi (acidmanic.moayedi@gmail.com)
  */
 public class Copier {
-    
-    public List<String> copyAny(File src,File dst){
+
+    public List<String> copyAny(File src, File dst) {
         List<String> copiedList = new ArrayList<>();
         copyAny(src, dst, copiedList);
         return copiedList;
     }
-    
+
     public List<String> copyDirectory(File src, File dst) {
         List<String> copiedList = new ArrayList<>();
         copyDirectory(src, dst, copiedList);
         return copiedList;
     }
-    
+
     public List<String> copyFileToDirectory(File src, File dst) {
         List<String> copiedList = new ArrayList<>();
         copyFileToDirectory(src, dst, copiedList);
         return copiedList;
     }
-    
-    
-    public  void copyAny(File src, File dst, List<String> copiedList) {
+
+    public void copyAny(File src, File dst, List<String> copiedList) {
         if (src.isFile()) {
             if (dst.isDirectory()) {
                 copyFileToDirectory(src, dst, copiedList);
@@ -59,7 +58,6 @@ public class Copier {
             copyDirectory(src, dst, copiedList);
         }
     }
-    
 
     public void copyDirectory(File src, File dst, List<String> copiedList) {
         File dstDouble = dst.toPath().resolve(src.getName()).toFile();
@@ -85,5 +83,21 @@ public class Copier {
             copiedList.add(dstFile.getAbsolutePath());
         } catch (Exception e) {
         }
+    }
+
+    public boolean tryDeleteAny(File file) {
+        boolean ret = true;
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                ret = ret & tryDeleteAny(f);
+            }
+        }
+        try {
+            ret = ret & file.delete();
+        } catch (Exception e) {
+            ret = false;
+        }
+        return ret;
     }
 }

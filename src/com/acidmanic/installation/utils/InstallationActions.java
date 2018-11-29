@@ -62,6 +62,9 @@ public class InstallationActions {
         Path here = info.getDeploymentMetadata().getExecutionJarFile()
                 .toPath().getParent().normalize();
         File src = here.resolve(name).toFile();
+        File dstContent = info.getInstallationDirectory()
+                .toPath().resolve(name).toFile();
+        new Copier().tryDeleteAny(dstContent);
         new Copier().copyAny(src,
                 info.getInstallationDirectory(), copiedFiles);
 
